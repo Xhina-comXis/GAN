@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Analista | Portal Crivo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="cursor"></div> 
+    <div class="cursor-follower"></div>
+
+    <nav class="holographic-nav">
+        <div class="nav-container">
+            <a href="#" class="logo" data-text="PORTAL CRIVO">PORTAL CRIVO</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="index.html#about" class="nav-link">Tecnologia</a>
+                <a href="index.html#demo" class="nav-link">Detector</a>
+                <a href="index.html#dashboard" class="nav-link">Painel</a>
+                <a href="#research" class="nav-link">Pesquisa</a>
+            </div>
+            <button class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </nav>
+<br><br><br><br><br>
+    <div class="analista-header">
+        <h1><i class="fas fa-user-shield"></i> Painel do Analista</h1>
+        <p>Analise a imagem enviada pelo usuário e dê seu parecer profissional.</p>
+    </div>
+    <main class="analista-main">
+        <h2>Imagem para Análise</h2>
+        <div class="analista-img-preview" id="imgPreviewBox">
+            <img id="imagemRecebida" alt="Imagem enviada para análise" style="display:none;">
+            <span id="semImagem" style="color:#8fa0d1;">Buscando imagem no servidor...</span>
+        </div>
+        <div class="analista-parecer" id="parecerStatus">Selecione uma opção:</div>
+        <div class="analista-actions">
+            <button class="btn-ia" id="btnParecerIA"><i class="fas fa-robot"></i> IA/Deepfake</button>
+            <button class="btn-legitimo" id="btnParecerLegitimo"><i class="fas fa-user-check"></i> Legítimo</button>
+        </div>
+        <button id="btnEnviarParecer" class="auth-submit" style="width:100%;margin-top:0.5rem;">Enviar análise</button>
+        <div class="analista-footer">
+            <i class="fas fa-info-circle"></i> Após enviar o parecer, ele pode ser salvo para retorno ao usuário.
+        </div>
+    </main>
+    <footer class="holographic-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 data-text="PORTAL_CRIVO">PORTAL_CRIVO</h4>
+                <p>Plataforma avançada de detecção de deepfakes e combate à desinformação</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4 data-text="NAVEGAÇÃO">NAVEGAÇÃO</h4>
+                <ul>
+                    <li><a href="index.html#hero">Início</a></li>
+                    <li><a href="index.html#about">Tecnologia</a></li>
+                    <li><a href="index.html#demo">Detector</a></li>
+                    <li><a href="index.html#dashboard">Painel</a></li>
+                    <li><a href="index.html#research">Pesquisa</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 data-text="RECURSOS">RECURSOS</h4>
+                <ul>
+                    <li><a href="#">Documentação</a></li>
+                    <li><a href="#">API para Desenvolvedores</a></li>
+                    <li><a href="#">Banco de Dados de Deepfakes</a></li>
+                    <li><a href="#">Relatórios de Desinformação</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 data-text="CONTATO">CONTATO</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> contato@portalcrivo.com</li>
+                    <li><i class="fas fa-university"></i> Etec Adhemar Batista Heméritas</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 PORTAL CRIVO | Trabalho de Conclusão de Informática para Internet</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const img = document.getElementById("imagemRecebida");
+        const semImagem = document.getElementById("semImagem");
+        const parecerStatus = document.getElementById("parecerStatus");
+        let imagemAtual = null;
+
+        // Função para buscar a próxima imagem do servidor
+        async function buscarImagemParaAnalise() {
+            try {
+                // Lembre-se de que a URL deve ser a do seu servidor backend
+                const response = await fetch("http://localhost:3000/proxima-imagem"); 
+                
+                if (response.status === 404) {
+                    img.style.display = "none";
+                    semImagem.style.display = "block";
+                    semImagem.textContent = "Nenhuma imagem para análise no momento.";
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Erro de rede: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                imagemAtual = data.filename;
+                
+                // A URL da imagem agora aponta para o arquivo no servidor
+                img.src = `http://localhost:3000/uploads/${imagemAtual}`;
+                img.style.display = "block";
+                semImagem.style.display = "none";
+
+            } catch (error) {
+                console.error("Erro ao buscar imagem:", error);
+                img.style.display = "none";
+                semImagem.style.display = "block";
+                semImagem.textContent = "Erro ao conectar com o servidor.";
+            }
+        }
+
+        // Inicia o processo ao carregar a página
+        await buscarImagemParaAnalise();
+
+        // Lógica para registrar o parecer do analista
+        let parecer = null;
+        document.getElementById("btnParecerIA").onclick = function() {
+            parecer = "IA/Deepfake";
+            parecerStatus.innerHTML = '<span style="color:#ff7675"><i class="fas fa-robot"></i>   IA/Deepfake</span>';
+        };
+        document.getElementById("btnParecerLegitimo").onclick = function() {
+            parecer = "Legítimo";
+            parecerStatus.innerHTML = '<span style="color:#00b894"><i class="fas fa-user-check"></i>  Legítimo</span>';
+        };
+
+        // Lógica para enviar o parecer final
+        document.getElementById("btnEnviarParecer").onclick = function() {
+            if (!imagemAtual) {
+                alert("Nenhuma imagem para analisar.");
+                return;
+            }
+            if (!parecer) {
+                alert("Selecione uma opção antes de enviar.");
+                return;
+            }
+            
+            // Em um sistema real, você enviaria este parecer para o servidor
+            // para que ele marque o arquivo como "analisado" e o remova da fila.
+            // Exemplo: fetch(`http://localhost:3000/analisar/${imagemAtual}`, { method: 'POST', body: JSON.stringify({ parecer }) });
+            
+            alert(`Análise (${parecer}) enviada para a imagem ${imagemAtual}!`);
+            
+            // Recarrega a página para buscar a próxima imagem pendente
+            window.location.reload();
+        };
+    });
+    </script>
+    
+    <script src="script.js"></script> </body>
+</html>
