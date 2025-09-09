@@ -1026,11 +1026,71 @@ section {
 .detector-upload {
 height: 320px;
 }
+#accessibility-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 55px;
+    height: 55px;
+    background-color: var(--primary);
+    color: var(--dark);
+    border: none;
+    border-radius: 50%;
+    font-size: 1.6rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; /* Garante que fique acima de outros elementos */
+    box-shadow: var(--glow);
+    transition: var(--transition);
+}
+
+#accessibility-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+}
+
+/* ===== AJUSTES PARA O MENU HAMBÚRGUER ===== */
 @media (max-width: 768px) {
-    .nav-links, .auth-buttons {
-        display: none;
+    .nav-links {
+        /* Transforma os links em um menu dropdown vertical */
+        position: absolute;
+        top: 100%; /* Posiciona abaixo da navbar */
+        left: 0;
+        width: 100%;
+        background: rgba(10, 10, 26, 0.98); /* Fundo para o menu aberto */
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0;
+        
+        /* Começa escondido e com altura zero */
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-out;
     }
-    
+
+    .nav-links.active {
+        /* Classe 'active' (adicionada via JS) torna o menu visível */
+        max-height: 500px; /* Altura suficiente para mostrar todos os links */
+        border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+    }
+
+    .nav-link {
+        padding: 1rem 0; /* Espaçamento dos links no menu móvel */
+    }
+
+    /* Animação do ícone hambúrguer para um 'X' quando ativo */
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
     .hamburger {
         display: block;
     }
